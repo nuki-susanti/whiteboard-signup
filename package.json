@@ -18,6 +18,9 @@
   "bugs": {
     "url": "https://github.com/nuki-susanti/whiteboard-signup/issues"
   },
+  "engines": {
+    "node": "14.15.4"
+  },
   "homepage": "https://github.com/nuki-susanti/whiteboard-signup#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -36,8 +39,5 @@
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "slugify": "^1.4.6"
-  },
-  "engines": {
-    "node": ">=10.0.0"
   }
 }
