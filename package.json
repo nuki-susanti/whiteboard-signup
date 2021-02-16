@@ -1,0 +1,37 @@
+{
+  "name": "whiteboard-signup",
+  "version": "1.0.0",
+  "description": "create signup credential",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon index.js",
+    "start:prod": "NODE_ENV=production nodemon index.js",
+    "debug": "ndb index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuki-susanti/whiteboard-signup.git"
+  },
+  "author": "nuki-susanti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nuki-susanti/whiteboard-signup/issues"
+  },
+  "homepage": "https://github.com/nuki-susanti/whiteboard-signup#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "joi": "^17.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.15",
+    "mongoose-findorcreate": "^3.0.0",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.4.18",
+    "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
+    "slugify": "^1.4.6"
+  }
+}
