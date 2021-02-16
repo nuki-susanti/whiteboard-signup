@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan'); //logger activity
+const cors = require('cors');
 
 const router = require('./src/routes');
 
@@ -14,6 +15,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(cors());
 
 //ROUTES
 app.use(router.userRouter);
