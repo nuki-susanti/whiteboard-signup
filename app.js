@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan'); //logger activity
 const cors = require('cors');
 const compression = require('compression');
+const passport = require('passport');
+const cookieSession = require('cookie-session');
 
 const router = require('./src/routes');
 const passportSetup = require('./src/services/passport');
@@ -19,6 +21,14 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 app.use(compression());
+app.use(cookieSession({
+    maxAge: 24 * 60 * 60 * 1000, //max age cookie we sent in ms
+    keys: process.env.COOKIE_KEY //encrypt the cookie
+}));
+
+//Initialize passport
+app.use(passport.initialize());
+app.use(passport.session())
 
 //ROUTES
 app.use(router.userRouter);
