@@ -1,5 +1,8 @@
 const userRouter = require('./user');
-// const authRouter = require('./auth');
+const googleRouter = require('./googleAuth');
 
 
-module.exports = userRouter;
+module.exports = {
+    userRouter,
+    googleRouter
+};
