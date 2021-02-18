@@ -34,9 +34,9 @@ app.use(passport.session())
 app.use(router.userRouter);
 app.use(router.googleRouter);
 
-app.get('/', (req, res) => {
-    res.render("login")
-});
+// app.get('/', (req, res) => {
+//     res.render("login")
+// });
 
 
 //ROUTE HANDLER FOR UNDEFINED.Place at the bottom!!
