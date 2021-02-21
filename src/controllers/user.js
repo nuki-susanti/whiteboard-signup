@@ -54,7 +54,7 @@ const userControllers = {
                 //Generate TOKEN
                 const token = signToken(userExist._id);
 
-                return res.status(201).json({
+                return res.status(200).json({
                     status: 'success',
                     message: `Welcome back, ${userExist.name}!`,
                     token
@@ -77,8 +77,28 @@ const userControllers = {
             status: 'success',
             results: users.length,
             data: users
-        })
+        });
     },
+
+    deleteAccount: async (req, res) => {
+        //Do not delete from the DB, but make it only inactive -> could be reactivate
+        //Put 'active flag to 'false'
+
+        try{
+            await User.findByIdAndUpdate(req.user.id, { active: false });
+
+            res.status(204).json({
+                status: 'success',
+                data: null
+            });
+
+        } catch (err) {
+            res.status(500).json({
+                status: 'failed',
+                message: err.message
+            });
+        }
+    }
 }
 
 module.exports = userControllers;

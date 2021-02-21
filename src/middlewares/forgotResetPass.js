@@ -49,7 +49,7 @@ const forgotPassword = async (req, res, next) => {
             message: 'Link for resetting (token) was sent to your email. Be quick, it only lasts 10 min'
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         userExist.reset_password_token = undefined;
         userExist.reset_password_expires = undefined;
 

@@ -46,7 +46,12 @@ const userSchema = new mongoose.Schema({
     },
     reset_password: Date,
     reset_password_token: String,
-    reset_password_expires: Date
+    reset_password_expires: Date,
+    active: {
+        type: Boolean,
+        default: true, //user default is active 
+        select: false
+    }
 });
 
 //DOCUMENT MIDDLEWARES -> runs before save() or create()
@@ -62,7 +67,7 @@ userSchema.pre('save', async function (next) { //Arrow function doesnt work, 'th
     this.password = await bcrypt.hash(this.password, 10);
 });
 
-userSchema.pre('save', async function (next) { 
+userSchema.pre('save', function (next) { 
     if (!this.isModified('password') || this.isNew) return next();
 
     //To compensate if saving to DB takes longer, ensuring token is always generated after password has been changed
@@ -70,6 +75,12 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.plugin(findOrCreate);
+
+userSchema.pre(/^find/, async function (next) {
+    //this points to the current query
+    await this.find({ active: { $ne: false } }); //ne -> not equal
+    next();
+})
 
 
 const User = mongoose.model('User', userSchema); //model

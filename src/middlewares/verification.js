@@ -19,7 +19,7 @@ const verifyToken = async (req, res, next) => {
     let decodedUser;
     const decoded = await jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
         if(err) {
-            console.log(err.message);
+            // console.log(err.message);
             return res.status(401).send('Ooops something went wrong');
         };
 

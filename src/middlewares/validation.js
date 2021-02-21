@@ -1,10 +1,11 @@
 const Joi = require('joi');
 
+
 const validateBody = (req, res, next) => {
     const { body } = req;
 
     const signupSchema = Joi.object({
-        name: Joi.string().regex(/^[a-zA-Z]/).required(),
+        name: Joi.string().regex(/^[a-zA-Z]+$/).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(5).required(),
         reset_password: Joi.date(),
@@ -17,11 +18,34 @@ const validateBody = (req, res, next) => {
         next();
     } else {
 
-        res.status(500).json({
-            status: 'Validation failed',
-            message: validateBody.error.details[0].message
+        res.status(400).json({
+            status: 'failed',
+            message: `Invalid ${validateBody.error.details[0].path}`
         });
     }
 };
 
-module.exports = validateBody;
+const updateValidation = (req, res, next) => {
+    const { name, email } =  req.body;
+
+    const updatedSchema= Joi.object({
+        name: Joi.string().regex(/^[a-zA-Z]+$/),
+        email: Joi.string().email(),
+    });
+
+    const updateBody = updatedSchema.validate({name, email});
+
+    if(!updateBody.error) {
+        next();
+    } else {
+        res.status(400).json({
+            status: 'failed',
+            message: `Invalid ${updateBody.error.details[0].path}`
+        });
+    }
+} 
+
+module.exports = {
+    validateBody,
+    updateValidation
+};

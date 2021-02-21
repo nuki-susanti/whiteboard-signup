@@ -33,6 +33,7 @@ app.use(passport.session())
 //ROUTES
 app.use(router.userRouter);
 app.use(router.googleRouter);
+app.use(router.updateProfileRouter)
 
 // app.get('/', (req, res) => {
 //     res.render("login")
