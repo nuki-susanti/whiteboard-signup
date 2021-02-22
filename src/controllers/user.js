@@ -46,7 +46,7 @@ const userControllers = {
             }
 
             //check if this user already registered in the database
-            const userExist = await User.findOne({ email }).select('+password'); //include password
+            const userExist = await User.findOne({ email, active: { $ne: false }}).select('+password'); //include password
 
             if(!userExist || !await bcrypt.compare(password, userExist.password)) {
                 return res.status(401).json({status: 'failed', message: 'Incorrect email or password'});
@@ -71,7 +71,7 @@ const userControllers = {
     
     getAllUsers: async (req, res) => {
 
-        const users = await User.find();
+        const users = await User.find().select('+active');
 
         res.status(200).json({
             status: 'success',
@@ -89,6 +89,7 @@ const userControllers = {
 
             res.status(204).json({
                 status: 'success',
+                message: 'Your account has been deleted',
                 data: null
             });
 

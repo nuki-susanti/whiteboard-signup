@@ -76,11 +76,11 @@ userSchema.pre('save', function (next) {
 
 userSchema.plugin(findOrCreate);
 
-userSchema.pre(/^find/, async function (next) {
-    //this points to the current query
-    await this.find({ active: { $ne: false } }); //ne -> not equal
-    next();
-})
+// userSchema.pre(/^find/, async function (next) {
+//     //this points to the current query
+//     await this.find({ active: { $ne: false } }); //ne -> not equal
+//     next();
+// })
 
 
 const User = mongoose.model('User', userSchema); //model

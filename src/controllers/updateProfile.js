@@ -19,7 +19,7 @@ const updateProfile = async (req, res) => {
 
    try {
     //2. Update user's profile
-    //a. Fiilter the input body
+    //Filter the input body
     const filteredBody = filterObj(req.body, 'name', 'email', 'role', 'industry', 'company_name');
     const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
         new: true, //to show the new data

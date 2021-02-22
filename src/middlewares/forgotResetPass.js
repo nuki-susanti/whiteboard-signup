@@ -9,7 +9,7 @@ const signToken = require('../services/auth');
 const forgotPassword = async (req, res, next) => {
 
     //1. Get user based on POSTed email
-    const userExist = await User.findOne({ email: req.body.email });
+    const userExist = await User.findOne({ email: req.body.email, active: { $ne: false }});
     
     if(!userExist) {
         return res.status(404).json({status: 'failed', message: 'This user does not exist.'});
