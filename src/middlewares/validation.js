@@ -5,7 +5,7 @@ const validateBody = (req, res, next) => {
     const { body } = req;
 
     const signupSchema = Joi.object({
-        name: Joi.string().regex(/^[a-zA-Z]+$/).required(),
+        name: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(5).required(),
         reset_password: Joi.date(),
@@ -17,6 +17,7 @@ const validateBody = (req, res, next) => {
     if(!validateBody.error) {
         next();
     } else {
+        console.log(validateBody.error);
 
         res.status(400).json({
             status: 'failed',

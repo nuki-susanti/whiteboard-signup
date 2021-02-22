@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
+    photo: {
+        type: String,
+        default: 'default.jpg'
+    },
     role: {
         type: String,
         enum: {
@@ -72,6 +76,7 @@ userSchema.pre('save', function (next) {
 
     //To compensate if saving to DB takes longer, ensuring token is always generated after password has been changed
     this.reset_password = Date.now() - 1000;
+    next();
 });
 
 userSchema.plugin(findOrCreate);

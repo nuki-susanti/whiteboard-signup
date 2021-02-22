@@ -21,6 +21,9 @@ const updateProfile = async (req, res) => {
     //2. Update user's profile
     //Filter the input body
     const filteredBody = filterObj(req.body, 'name', 'email', 'role', 'industry', 'company_name');
+
+    if(req.file) filteredBody.photo = req.file.filename;
+
     const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
         new: true, //to show the new data
         runValidators: true

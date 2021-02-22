@@ -5,12 +5,14 @@ const {
     verification,
     authentication,
     forgotResetPassword,
-    updatePassword
+    updatePassword,
+    photo
 } = require('../middlewares');
 const updateProfile = require('../controllers/updateProfile');
 
 
-router.patch('/update-profile', verification, validation.updateValidation, updateProfile);
+router.patch('/profile', 
+    verification, validation.updateValidation, photo.uploadPhoto, photo.resizePhoto, updateProfile);
 
 
 module.exports = router;

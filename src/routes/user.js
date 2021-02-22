@@ -1,11 +1,13 @@
 const router = require('express').Router();
+
 const userControllers = require('../controllers/user');
 const {
     validation,
     verification,
     authentication,
     forgotResetPassword,
-    updatePassword
+    updatePassword,
+    photo
 } = require('../middlewares');
 
 

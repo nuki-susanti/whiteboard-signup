@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 
 const User = require('../models/userModel');
+const Email = require('../services/email');
 const signToken = require('../services/auth');
 
 const userControllers = {
@@ -14,7 +15,12 @@ const userControllers = {
             if(userExist) {
                 return res.status(400).json({status: 'failed', message: `${body.email} is already registered`});
             } else {
-                let newUser = await User.create(body)
+                let newUser = await User.create(body);
+
+                //Send a welcoming email
+                const url = `${req.protocol}://${req.get('host')}/profile`; //point to user account page
+                // console.log(url);
+                await new Email(newUser, url).sendWelcome();
 
                 //Generate TOKEN
                 const token = signToken(newUser._id);
@@ -87,7 +93,7 @@ const userControllers = {
         try{
             await User.findByIdAndUpdate(req.user.id, { active: false });
 
-            res.status(204).json({
+            res.status(200).json({
                 status: 'success',
                 message: 'Your account has been deleted',
                 data: null
