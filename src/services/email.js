@@ -12,10 +12,10 @@ module.exports = class email {
     };
 
     newTransport() {
-        // if(process.env.NODE_ENV === 'production') {
-        //     //Send email using send grid
-        //     return 100;
-        // }
+        if(process.env.NODE_ENV === 'development') {
+            //Send email using send grid
+            return 100;
+        }
 
         return nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
