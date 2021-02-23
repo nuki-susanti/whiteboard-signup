@@ -5,14 +5,14 @@ const findOrCreate = require('mongoose-findorcreate');
 const User = require('../models/userModel');
 
 passport.serializeUser((user, done) => {
-    done(null, user.id); //sending out only user.id in the cookie
-});
+    done(null, user.id); //sending out only user.id in the cookie to the browser. null is error
+}); //cookie encrypted
 
 passport.deserializeUser( async (id, done) => {
-    const user = await User.findById(id);
-    done(null, user);
-})
-
+    const user = await User.findById(id); //search the user in the DB based on the info in cookie
+    // console.log(user);
+    done(null, user); // then grant access to redirect
+});
 
 //Use google strategy
 module.exports = passport.use(
@@ -20,7 +20,7 @@ module.exports = passport.use(
         //Options for strategy
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: 'https://whiteboard-signup.herokuapp.com/auth/google/redirect'
+        callbackURL: 'http://localhost:3000/auth/google/redirect'
     }, async (accessToken, refreshToken, profile, done) => {
         //Passport callback function
         // console.log(profile.emails[0]['value']);

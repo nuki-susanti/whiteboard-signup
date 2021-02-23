@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/userModel');
 const Email = require('../services/email');
-const signToken = require('../services/auth');
+const { signToken, cookieOptions} = require('../services/auth');
 
 const userControllers = {
     signup: async (req, res) => {
@@ -25,7 +25,13 @@ const userControllers = {
                 //Generate TOKEN
                 const token = signToken(newUser._id);
 
-                res.status(200).json({
+                //Stuff JWT into the cookie
+                res.cookie('jwt', token, cookieOptions);
+
+                //Remove user's password from the response
+                newUser.password = undefined;
+
+                res.status(201).json({
                     status: 'success',
                     message: `Thank you ${newUser.name} for signing up`,
                     token,
@@ -59,6 +65,9 @@ const userControllers = {
             } else {
                 //Generate TOKEN
                 const token = signToken(userExist._id);
+
+                //Stuff JWT into the cookie
+                res.cookie('jwt', token, cookieOptions);
 
                 return res.status(200).json({
                     status: 'success',

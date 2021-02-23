@@ -7,7 +7,7 @@ const passport = require('passport');
 const cookieSession = require('cookie-session');
 
 const router = require('./src/routes');
-const passportSetup = require('./src/services/passport');
+const passportSetup = require('./src/services/googleAuth');
 
 const app = express();
 if(process.env.NODE_ENV === 'development') {
@@ -22,22 +22,22 @@ app.use(express.json());
 app.use(cors());
 app.use(compression());
 app.use(cookieSession({
-    maxAge: 24 * 60 * 60 * 1000, //max age cookie we sent in ms
+    maxAge: 24 * 60 * 60 * 1000, //max age cookie we sent (1day) in ms
     keys: process.env.COOKIE_KEY //encrypt the cookie
 }));
 
 //Initialize passport
 app.use(passport.initialize());
-app.use(passport.session())
+app.use(passport.session()); //tto control the logging in session
 
 //ROUTES
 app.use(router.userRouter);
 app.use(router.googleRouter);
 app.use(router.updateProfileRouter)
 
-// app.get('/', (req, res) => {
-//     res.render("login")
-// });
+app.get('/', (req, res) => {
+    res.render("login")
+});
 
 
 //ROUTE HANDLER FOR UNDEFINED.Place at the bottom!!
