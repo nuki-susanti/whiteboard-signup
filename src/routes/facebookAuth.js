@@ -3,8 +3,8 @@ const passport = require('passport');
 
 
 //Auth using google account
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/auth/google/redirect', passport.authenticate('google'), async (req, res) => {
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+router.get('/auth/facebook/redirect', passport.authenticate('facebook'), async (req, res) => {
     //res.send(req.user)
 
     res.status(200).json({

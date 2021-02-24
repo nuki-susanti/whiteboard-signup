@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 
-module.exports = mongoose.connect(process.env.DATABASE_LOCAL, {
+const mongodbConnection = mongoose.connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true
-}).then(con => {
-    // console.log(con);
-    console.log('Connected to MongoDB');
+}, (err, conn) => {
+    if(err) throw err;
+    console.log("Database connected!");
 });
+
+module.exports = mongodbConnection;

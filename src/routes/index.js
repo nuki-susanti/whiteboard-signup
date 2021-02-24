@@ -1,10 +1,13 @@
 const userRouter = require('./user');
-const googleRouter = require('./googleAuth');
 const updateProfileRouter = require('./updateProfile');
+const googleRouter = require('./googleAuth');
+const facebookRouter = require('./facebookAuth');
+
 
 
 module.exports = {
     userRouter,
+    updateProfileRouter,
     googleRouter,
-    updateProfileRouter
+    facebookRouter
 };

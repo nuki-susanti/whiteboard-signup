@@ -1,4 +1,19 @@
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream'); //Allows streaming of files to and from mongodb
 const User = require('../models/userModel');
+const methodOverride = require('method-override');
+const connect = mongoose.createConnection(process.env.DATABASE, 
+    { useUnifiedTopology: true, useNewUrlParser: true})
+
+// Init gfs
+let gfs;
+
+connect.once('open',() => {
+    // Init stream
+    gfs = Grid(connect.db, mongoose.mongo);
+    gfs.collection('uploads');
+});
+
 
 //Helper to loop through body to restrict only allowed fields
 const filterObj = (obj, ...allowedFields) => {
