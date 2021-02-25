@@ -43,9 +43,13 @@ const updateProfile = async (req, res) => {
         new: true, //to show the new data
         runValidators: true
     });
+
+    // const image = gfs.createReadStream(req.user.photo);
+    // image.pipe(res);
+
     res.status(200).json({
         status: 'success',
-        data: updatedUser
+        data: updatedUser || req.user
     })
    } catch (err) {
        res.status(400).json({
