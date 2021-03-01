@@ -2,9 +2,8 @@ extends baseEmail
 
 block content
     p Hi #{name},
-    p We have received your request to reset your password. Please copy the token below to reset your password.
-    p #{url}
-    p (Website for this action not yet implemented.)
+    p We have received your request to reset your password. Please click the link below to reset your password.
+    p If you do not reset your password within two hours, you will need to submit a new request.
     table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
         tbody
             tr
@@ -14,6 +13,7 @@ block content
                             tr
                                 td
                                     a(href=`${url}`, target='_blank') Reset your password
-    p If you didn't forget your password, please ignore this email.
+    p If you need additional assistance, please contact
+    span(style='color:purple;')   team@whiteboard.id
     p Cheers,
     p WHITEBOARD Team

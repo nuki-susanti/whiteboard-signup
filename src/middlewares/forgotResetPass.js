@@ -1,8 +1,11 @@
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+const pug = require('pug');
 
+const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REFRESH_TOKEN, EMAIL_FROM } = process.env;
 const User = require('../models/userModel');
-const Email = require('../services/email');
-const signToken = require('../services/auth');
+const { signToken, cookieOptions} = require('../services/auth');
 
 //Purpose: reset password by asking first if user forgot password
 
@@ -26,7 +29,8 @@ const forgotPassword = async (req, res, next) => {
         .update(resetToken)
         .digest('hex');
 
-    userExist.reset_password_expires = Date.now() + 60 * 60 * 1000; //now + 60 min in ms
+    userExist.reset_password_expires = Date.now() + 120 * 60 * 1000; //now + 120 min in ms
+    
     await userExist.save((err, user) => {
         if(err) return res.send(err)
     });
@@ -34,20 +38,53 @@ const forgotPassword = async (req, res, next) => {
     //3. Send it to user's email using node mailer
     const resetURL = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
 
-    // const message = `Click me to reset your password ${resetURL}.\n
-    //     Ignore this email, if you did not forget your password.`;
-
     try {
-        // await sendEmail({
-        //     email: userExist.email,
-        //     subject: 'Reset password (valid for 60min)',
-        //     message
-        // })
-        await new Email(userExist, resetURL).sendResetPass();
+
+        const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+        oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+        async function sendMail(name, email, url) {
+            //Get access token
+            const accessToken = await oAuth2Client.getAccessToken();
+
+            //Create nodemailer function
+            const transport = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    type: 'OAuth2',
+                    user: EMAIL_FROM,
+                    clientId: CLIENT_ID,
+                    clientSecret: CLIENT_SECRET,
+                    refreshToken: REFRESH_TOKEN,
+                    accessToken: accessToken
+                }
+            });
+
+            //Render HTML based on PUG template
+            const html = pug.renderFile('/home/upis/Coding/final-project/whiteboard-signup/views/resetPass.pug', {
+                name: name,
+                url
+            });
+
+            const mailOptions = {
+                from: `Whiteboard Team <${EMAIL_FROM}>`,
+                to: email,
+                subject: 'Reset your WHITEBOARD account password',
+                html
+            };
+
+            //Send email
+            const result = await transport.sendMail(mailOptions);
+            return result               
+        };
+
+        sendMail(userExist.name, userExist.email, resetURL).then(result => {
+            console.log('Email is sent...', result);
+        }).catch(error => console.log(error.message));
     
         res.status(200).json({
             status: 'success',
-            message: `Link to reset your password (token) was sent to your email. That only lasts for 1 hour.`
+            message: `Link to reset your password was sent to your email. That only lasts for 2 hour.`
         });
     } catch (err) {
         // console.log(err);
@@ -69,18 +106,17 @@ const resetPassword = async (req, res, next) => {
         .createHash('sha256')
         .update(req.params.token)
         .digest('hex');
-        console.log(hashedToken);
 
         const userExist = await User.findOne({
             reset_password_token: hashedToken,
             reset_password_expires: { $gt: Date.now() }
         });
-        console.log(userExist);
+        // console.log(userExist);
 
         //2. Reset password only if the token has not expired
         //If token has expired, it will not send userExist
         if(!userExist) {
-            return res.status(400).json({status: 'failed', message: 'Token has expired'});
+            return res.status(400).json({status: 'failed', message: 'Link has expired'});
         }
         userExist.password = req.body.password;
         
@@ -95,6 +131,9 @@ const resetPassword = async (req, res, next) => {
         //4. Log the user in by sending JWT token
         //Generate TOKEN
         const token = signToken(userExist._id);
+
+        //Stuff JWT into the cookie
+        res.cookie('jwt', token, cookieOptions);
 
         res.status(200).json({
             status: 'success',

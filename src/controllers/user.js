@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 
 const User = require('../models/userModel');
-const Email = require('../services/email');
+// const Email = require('../services/email');
 const { signToken, cookieOptions} = require('../services/auth');
 
 const userControllers = {
@@ -18,9 +18,8 @@ const userControllers = {
                 let newUser = await User.create(body);
 
                 //Send a welcoming email
-                const url = `${req.protocol}://${req.get('host')}/profile`; //point to user account page
+                // const url = `${req.protocol}://${req.get('host')}/profile`; //point to user account page
                 // console.log(url);
-                await new Email(newUser, url).sendWelcome();
 
                 //Generate TOKEN
                 const token = signToken(newUser._id);

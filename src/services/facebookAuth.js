@@ -10,7 +10,7 @@ module.exports = passport.use(
         //Options for strategy
         clientID: process.env.FACEBOOK_APP_ID,
         clientSecret: process.env.FACEBOOK_APP_SECRET,
-        callbackURL: 'http://localhost:3000/auth/facebook/redirect',
+        callbackURL: 'https://whiteboard-signup.herokuapp.com/auth/facebook/redirect',
         profileFields: ['id', 'emails', 'name']
     }, async (accessToken, refreshToken, profile, done) => {
         //Passport callback function

@@ -34,14 +34,15 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: {
-            values: ['Designer', 'Developer', 'QA Engineer', 'Student']
+            values: ['Owner', 'Employee', 'Director', 'Manager', 'Supervisor']
         }
     },
     company_name: String,
     industry: {
         type: String,
         enum: {
-            values: ['IT', 'Education', 'Management']
+            values: ['Education', 'Food & Beverage', 'Health Services', 'Tourism',
+            'Transportation', 'Public Services', 'Telecomunication', 'Agriculture', 'Others']
         }
     },
     __v: {
