@@ -1,10 +1,7 @@
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
-const pug = require('pug');
 
-const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REFRESH_TOKEN, EMAIL_FROM } = process.env;
 const User = require('../models/userModel');
+const sendMail = require('../services/email');
 const { signToken, cookieOptions} = require('../services/auth');
 
 //Purpose: reset password by asking first if user forgot password
@@ -38,48 +35,10 @@ const forgotPassword = async (req, res, next) => {
     //3. Send it to user's email using node mailer
     const resetURL = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
 
-    try {
-
-        const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-        oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-        async function sendMail(name, email, url) {
-            //Get access token
-            const accessToken = await oAuth2Client.getAccessToken();
-
-            //Create nodemailer function
-            const transport = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    type: 'OAuth2',
-                    user: EMAIL_FROM,
-                    clientId: CLIENT_ID,
-                    clientSecret: CLIENT_SECRET,
-                    refreshToken: REFRESH_TOKEN,
-                    accessToken: accessToken
-                }
-            });
-
-            //Render HTML based on PUG template
-            const html = pug.renderFile('/home/upis/Coding/final-project/whiteboard-signup/views/resetPass.pug', {
-                name: name,
-                url
-            });
-
-            const mailOptions = {
-                from: `Whiteboard Team <${EMAIL_FROM}>`,
-                to: email,
-                subject: 'Reset your WHITEBOARD account password',
-                html
-            };
-
-            //Send email
-            const result = await transport.sendMail(mailOptions);
-            return result               
-        };
+    try {    
 
         sendMail(userExist.name, userExist.email, resetURL).then(result => {
-            console.log('Email is sent...', result);
+            console.log(`Email is sent to ${userExist.email}`);
         }).catch(error => console.log(error.message));
     
         res.status(200).json({
