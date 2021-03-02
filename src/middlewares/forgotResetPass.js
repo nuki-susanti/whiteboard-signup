@@ -43,7 +43,7 @@ const forgotPassword = async (req, res, next) => {
     
         res.status(200).json({
             status: 'success',
-            message: `Link to reset your password was sent to your email. That only lasts for 2 hour.`
+            message: `Link to reset your password was sent to ${userExist.email}. That only lasts for 2 hour.`
         });
     } catch (err) {
         // console.log(err);
