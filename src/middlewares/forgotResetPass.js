@@ -37,7 +37,7 @@ const forgotPassword = async (req, res, next) => {
 
     try {    
 
-        sendMail(userExist.name, userExist.email, resetURL).then(result => {
+        sendMail(userExist.name, userExist.email, resetURL, resetPass).then(result => {
             console.log(`Email is sent to ${userExist.email}`);
         }).catch(error => console.log(error.message));
     
@@ -69,8 +69,7 @@ const resetPassword = async (req, res, next) => {
         const userExist = await User.findOne({
             reset_password_token: hashedToken,
             reset_password_expires: { $gt: Date.now() }
-        });
-        // console.log(userExist);
+        })
 
         //2. Reset password only if the token has not expired
         //If token has expired, it will not send userExist

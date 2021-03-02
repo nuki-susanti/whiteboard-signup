@@ -19,7 +19,7 @@ const verifyToken = async (req, res, next) => {
     let decodedUser;
     const decoded = await jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
         if(err) {
-            // console.log(err.message);
+            console.log(err);
             return res.status(401).send('Ooops something went wrong');
         };
 
@@ -30,6 +30,7 @@ const verifyToken = async (req, res, next) => {
     const currentUser = await User.findById(decodedUser.id, (err, user) => {
         decodedUser.reset_password = user.reset_password;
     });
+
     if(!currentUser) {
         return res.status(401).send('User no longer exists');
     }
