@@ -8,38 +8,39 @@ const { signToken, cookieOptions} = require('../services/auth');
 
 const forgotPassword = async (req, res, next) => {
 
+    
     //1. Get user based on POSTed email
     const userExist = await User.findOne({ email: req.body.email, active: { $ne: false }});
-    
+        
     if(!userExist) {
         return res.status(404).json({status: 'failed', message: 'This user does not exist.'});
     }
 
-    //2. Generate the random token which is gonna be sent to the user's email
-    //Unencrypted plain text token sent via email
-    const resetToken = crypto.randomBytes(32).toString('hex'); 
+    try { 
+        //2. Generate the random token which is gonna be sent to the user's email
+        //Unencrypted plain text token sent via email
+        const resetToken = crypto.randomBytes(32).toString('hex'); 
 
-    //Doesnt need to be hashed using bcrypt. less likely to be attacked
-    //Save in database
-    userExist.reset_password_token = crypto
-        .createHash('sha256')
-        .update(resetToken)
-        .digest('hex');
+        //Doesnt need to be hashed using bcrypt. less likely to be attacked
+        //Save in database
+        userExist.reset_password_token = crypto
+            .createHash('sha256')
+            .update(resetToken)
+            .digest('hex');
 
-    userExist.reset_password_expires = Date.now() + 120 * 60 * 1000; //now + 120 min in ms
-    
-    await userExist.save((err, user) => {
-        if(err) return res.send(err)
-    });
+        userExist.reset_password_expires = Date.now() + 120 * 60 * 1000; //now + 120 min in ms
+        
+        await userExist.save();
+        console.log(userExist);
 
-    //3. Send it to user's email using node mailer
-    const resetURL = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+        //3. Send it to user's email using node mailer
+        const resetURL = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+        console.log(resetURL);
 
-    try {    
 
-        sendMail(userExist.name, userExist.email, resetURL, resetPass).then(result => {
-            console.log(`Email is sent to ${userExist.email}`);
-        }).catch(error => console.log(error.message));
+        await sendMail(userExist.name, userExist.email, resetURL);
+
+        console.log(`Email is sent to ${userExist.email}`);
     
         res.status(200).json({
             status: 'success',
@@ -50,7 +51,8 @@ const forgotPassword = async (req, res, next) => {
         userExist.reset_password_token = undefined;
         userExist.reset_password_expires = undefined;
 
-        await userExist.save();
+        // await userExist.save();
+        console.log(err);
         next('Ooops something wrong while sending an email');
     }
 }

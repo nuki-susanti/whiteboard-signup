@@ -5,7 +5,7 @@ const { EMAIL_FROM, EMAIL_PASS } = process.env;
 
 
 
-module.exports = async function sendMail(name, email, url, template) {
+module.exports = async function sendMail(name, email, url) {
 
     //Create nodemailer function
     const transport = nodemailer.createTransport({
@@ -19,7 +19,7 @@ module.exports = async function sendMail(name, email, url, template) {
     });
 
     //Render HTML based on PUG template
-    const html = pug.renderFile(__dirname + `/../../views/${template}.pug`, {
+    const html = pug.renderFile(__dirname + '/../../views/resetPass.pug', {
         name: name,
         url
     });
