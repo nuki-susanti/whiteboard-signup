@@ -19,7 +19,7 @@ module.exports = async function sendMail(name, email, url) {
     });
 
     //Render HTML based on PUG template
-    const html = pug.renderFile('/home/upis/Coding/final-project/whiteboard-signup/views/resetPass.pug', {
+    const html = pug.renderFile(__dirname + '/../../views/resetPass.pug', {
         name: name,
         url
     });
