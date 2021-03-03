@@ -1,4 +1,5 @@
 const passport = require('passport');
+// const GooglePlusTokenStrategy = require('passport-google-plus-token');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
 
@@ -15,7 +16,7 @@ passport.deserializeUser( async (id, done) => {
 });
 
 //Use google strategy
-module.exports = passport.use(
+module.exports = passport.use('google',
     new GoogleStrategy({
         //Options for strategy
         clientID: process.env.CLIENT_ID,
@@ -23,18 +24,52 @@ module.exports = passport.use(
         callbackURL: 'https://whiteboard-signup.herokuapp.com/auth/google/redirect'
     }, async (accessToken, refreshToken, profile, done) => {
         //Passport callback function
-        // console.log(profile.emails[0]['value']);
-        const userProfile = {
-            googleId: profile.id, 
-            name: profile.displayName,
-            email: profile.emails[0]['value']
+        try {
+           // console.log(profile.emails[0]['value']);
+            const userProfile = {
+                googleId: profile.id, 
+                name: profile.displayName,
+                email: profile.emails[0]['value']
+            }
+        
+            await User.findOrCreate({ googleId: userProfile.id, name: userProfile.name, email: userProfile.email },
+                (err, user) => {
+                user.save({ validateBeforeSave: false });
+                done(null, user);
+            }); 
+        } catch (error) {
+            done(error, false, error.message);
         }
-    
-        await User.findOrCreate({ googleId: userProfile.id, name: userProfile.name, email: userProfile.email },
-            (err, user) => {
-            user.save({ validateBeforeSave: false });
-            // console.log(user);
-            done(null, user);
-        })
     })
 );
+
+
+// Google OAuth Strategy
+// module.exports = passport.use('googleToken', new GooglePlusTokenStrategy({
+//     clientID: process.env.CLIENT_ID,
+//     clientSecret: process.env.CLIENT_SECRET,
+//   }, async (accessToken, refreshToken, profile, done) => {
+//       console.log('accessToken', accessToken);
+//       console.log('refreshToken', refreshToken);
+//       console.log('profile', profile);
+
+//       //Passport callback function
+//         try {
+//            // console.log(profile.emails[0]['value']);
+//             console.log(accessToken, refreshToken);
+//             const userProfile = {
+//                 googleId: profile.id, 
+//                 name: profile.displayName,
+//                 email: profile.emails[0]['value']
+//             }
+        
+//             await User.findOrCreate({ googleId: userProfile.id, name: userProfile.name, email: userProfile.email },
+//                 (err, user) => {
+//                 user.save({ validateBeforeSave: false });
+//                 user.accessToken = accessToken;
+//                 done(null, user);
+//             }); 
+//         } catch (error) {
+//             done(error, false, error.message);
+//         }
+// }));

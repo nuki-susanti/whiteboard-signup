@@ -7,7 +7,8 @@ const {
     authentication,
     forgotResetPassword,
     updatePassword,
-    photo
+    photo,
+    googleSignIn
 } = require('../middlewares');
 
 

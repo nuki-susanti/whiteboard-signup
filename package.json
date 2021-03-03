@@ -45,8 +45,10 @@
     "nodemailer": "^6.5.0",
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
+    "passport-facebook-token": "^4.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "pug": "^3.0.0",
+    "passport-google-plus-token": "^2.1.0",
+    "pug": "^3.0.2",
     "sharp": "^0.27.1",
     "slugify": "^1.4.6"
   }

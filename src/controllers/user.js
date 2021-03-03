@@ -71,7 +71,10 @@ const userControllers = {
                 return res.status(200).json({
                     status: 'success',
                     message: `Welcome back, ${userExist.name}!`,
-                    token
+                    token,
+                    data: {
+                        user: userExist
+                    }
                 });
             }         
         } catch (err) {

@@ -4,6 +4,7 @@ const findOrCreate = require('mongoose-findorcreate');
 
 const User = require('../models/userModel');
 
+
 //Use facebook strategy
 module.exports = passport.use(
     new FacebookStrategy({
@@ -20,12 +21,12 @@ module.exports = passport.use(
             name: `${profile.name.givenName} ${profile.name.familyName}`,
             email: profile.emails[0]['value']
         }
-        console.log(userProfile);
+        console.log(accessToken, userProfile);
     
         await User.findOrCreate({ facebookId: userProfile.id, name: userProfile.name, email: userProfile.email },
             (err, user) => {
             user.save({ validateBeforeSave: false });
-            // console.log(user);
+            user.accessToken = accessToken;
             done(null, user);
         })
     })

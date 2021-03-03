@@ -11,8 +11,10 @@ const {
 const updateProfile = require('../controllers/updateProfile');
 
 
-router.patch('/profile', 
-    verification, validation.updateValidation, photo.uploadPhoto, photo.resizePhoto, updateProfile);
+router
+    .route('/profile')
+    .get(verification, updateProfile)
+    .patch(verification, validation.updateValidation, photo.uploadPhoto, photo.resizePhoto, updateProfile);
 
 
 module.exports = router;

@@ -24,10 +24,10 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 app.use(compression());
-app.use(cookieSession({
-    maxAge: 24 * 60 * 60 * 1000, //max age cookie we sent (1day) in ms
-    keys: process.env.COOKIE_KEY //encrypt the cookie
-}));
+// app.use(cookieSession({
+//     maxAge: 24 * 60 * 60 * 1000, //max age cookie we sent (1day) in ms
+//     keys: process.env.COOKIE_KEY //encrypt the cookie
+// }));
 app.use(methodOverride('_method'));
 
 //Initialize passport
@@ -40,9 +40,9 @@ app.use(router.googleRouter);
 app.use(router.facebookRouter);
 app.use(router.updateProfileRouter);
 
-// app.get('/', (req, res) => {
-//     res.render("login")
-// });
+app.get('/', (req, res) => {
+    res.render("login")
+});
 
 
 //ROUTE HANDLER FOR UNDEFINED.Place at the bottom!!
